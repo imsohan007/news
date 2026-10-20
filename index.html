@@ -57,6 +57,7 @@ header{background:linear-gradient(120deg,#0e0f12,#2b0e11)}.logo{box-shadow:0 4px
 .ai{width:100%;font:inherit;font-weight:700;padding:12px;border:0;border-radius:12px;color:#fff;background:linear-gradient(120deg,#d62828,#7c3aed);cursor:pointer;margin-bottom:8px;box-shadow:0 6px 18px rgba(124,58,237,.3)}.ai[disabled]{opacity:.6;cursor:wait}
 .aimsg{font-size:13px;color:var(--mu);margin-bottom:14px;padding:8px 10px;border-radius:8px;background:var(--fd)}.aimsg:empty{display:none}
 .ai2{width:100%;font:inherit;font-weight:500;padding:10px;border:1.5px dashed var(--ac);border-radius:12px;color:var(--ink);background:transparent;cursor:pointer;margin-bottom:8px}.ai2:hover{background:var(--fd)}.ai2[disabled]{opacity:.6;cursor:wait}
+.ph{border:1px solid var(--ln);border-radius:12px;padding:12px;margin:14px 0;background:var(--fd)}.ph h3{margin:0 0 8px;font-size:14px}.exif{font-size:13px}.exif div{margin:4px 0}.exif button,.hb{font:inherit;font-size:12px;border:1px solid var(--ln);background:var(--pn);color:var(--ink);border-radius:8px;padding:3px 8px;cursor:pointer}.hb{display:block;width:100%;text-align:left;font-size:14px;padding:8px 10px;margin-top:6px}.hb:hover,.exif button:hover{border-color:var(--ac)}.sc,.note{font-size:12px;color:var(--mu);margin-top:8px}
 @media(max-width:1100px){.pv{position:static}.stage{padding:12px}}
 @media(prefers-reduced-motion:reduce){.t,.ts{transition:none}.t:hover{transform:none}}
 </style></head><body>
@@ -64,6 +65,10 @@ header{background:linear-gradient(120deg,#0e0f12,#2b0e11)}.logo{box-shadow:0 4px
 <main>
 <section class="pn ct"><button class="ai" id="ai">✨ AI অটো রেকমেন্ড</button><button class="ai2" id="nt">＋ AI দিয়ে নতুন টেমপ্লেট বানান</button><div class="aimsg" id="am" role="status"></div><h2>কনটেন্ট</h2>
 <label class="drop" for="file" id="dz">ছবি আপলোড করুন</label><input type="file" id="file" accept="image/*" hidden>
+<div class="ph"><h3>📷 ছবি থেকে শিরোনাম, তারিখ ও স্থান</h3><div class="exif" id="ex">ছবি আপলোড করলে ছবির তারিখ ও স্থান এখানে নিজে থেকে দেখা যাবে।</div>
+<label for="place">স্থান</label><input type="text" id="place" placeholder="যেমন: শাহবাগ, ঢাকা">
+<label for="note">কী ঘটেছে? (ঐচ্ছিক, AI-কে সাহায্য করবে)</label><textarea id="note" style="min-height:52px" placeholder="যেমন: নতুন সেতু উদ্বোধন"></textarea>
+<button class="ai" id="hl" style="margin-top:10px">✨ ছবি দেখে শিরোনাম লিখুন</button><div id="ho"></div><div class="note">AI ভুল করতে পারে। প্রকাশের আগে নাম, সংখ্যা ও স্থান যাচাই করুন।</div></div>
 <label for="head">শিরোনাম</label><textarea id="head">রাজধানীতে আজ থেকে নতুন যান চলাচল নিয়ম কার্যকর</textarea>
 <div class="r2"><div><label for="tag">ট্যাগ</label><input type="text" id="tag" value="ব্রেকিং নিউজ"></div><div><label for="brand">পেজের নাম</label><input type="text" id="brand" value="আপনার নিউজ"></div>
 <div><label for="date">তারিখ</label><input type="text" id="date"></div><div><label for="src">সূত্র</label><input type="text" id="src" placeholder="ঐচ্ছিক"></div></div>
@@ -95,7 +100,7 @@ function cover(c,x,y,w,h,t){c.save();c.beginPath();c.rect(x,y,w,h);c.clip();
  else{var g=c.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,t.a);g.addColorStop(1,t.d);c.fillStyle=g;c.fillRect(x,y,w,h);c.fillStyle='rgba(255,255,255,.35)';c.font='500 '+w*.04+'px '+SA;c.textAlign='center';c.fillText('এখানে আপনার ছবি',x+w/2,y+h*.4);c.textAlign='left'}c.restore()}
 function grad(c,y,W,h,col,a0,a1){var g=c.createLinearGradient(0,y,0,y+h);g.addColorStop(0,rgba(col,a0));g.addColorStop(1,rgba(col,a1));c.fillStyle=g;c.fillRect(0,y,W,h)}
 function chip(c,x,y,s,fs,bg,fg,ct){if(!s)return;c.font='700 '+fs+'px '+SA;var w=c.measureText(s).width+fs*1.3,h=fs*1.75;if(ct)x-=w/2;c.fillStyle=bg;c.fillRect(x,y,w,h);c.fillStyle=fg;c.textAlign='left';c.fillText(s,x+fs*.65,y+h*.7)}
-function meta(){return[D.src,D.date].filter(Boolean).join('  |  ')}
+function meta(){return[D.place,D.src,D.date].filter(Boolean).join('  |  ')}
 function foot(c,W,p,y,h,t,fg,sub,dc){var fs=W*.034,by=y+h/2+fs*.35;c.font='700 '+fs+'px '+SA;
  var bx=p;if(D.brand){c.fillStyle=dc||t.a;c.beginPath();c.arc(p+fs*.4,by-fs*.3,fs*.28,0,7);c.fill();bx=p+fs*1.1}
  if(D.brand){c.font='700 '+fs+'px '+SA;c.fillStyle=fg;c.fillText(D.brand,bx,by)}
@@ -125,14 +130,31 @@ function(c,W,H,t){var m=W*.05,ih=H*.6,fh=H*.08;c.fillStyle=t.d;c.fillRect(0,0,W,
 function(c,W,H,t){var p=W*.06,bar=H*.085;cover(c,0,0,W,H,t);grad(c,H*.35,W,H*.65,'#000000',0,.92);c.fillStyle=t.a;c.fillRect(0,0,W,bar);
  c.font='700 '+W*.036+'px '+SA;c.fillStyle=t.o;c.fillText(D.tag||'',p,bar/2+W*.013);c.font='400 '+W*.028+'px '+SA;c.textAlign='right';c.fillText(D.date||'',W-p,bar/2+W*.01);c.textAlign='left';
  var f=fit(c,D.head,SA,700,W-2*p,H*.4,W*.08,5),top=H-H*.1-f.L.length*f.lh;put(c,f,p,top,'#fff');c.fillStyle=t.a;c.fillRect(p,H-H*.085,W*.12,5);
- c.font='700 '+W*.032+'px '+SA;c.fillStyle='#fff';c.fillText(D.brand||'',p,H-H*.035);c.font='400 '+W*.026+'px '+SA;c.fillStyle='#bbb';c.textAlign='right';c.fillText(D.src||'',W-p,H-H*.035);c.textAlign='left'},
+ c.font='700 '+W*.032+'px '+SA;c.fillStyle='#fff';c.fillText(D.brand||'',p,H-H*.035);c.font='400 '+W*.026+'px '+SA;c.fillStyle='#bbb';c.textAlign='right';c.fillText(D.place||D.src||'',W-p,H-H*.035);c.textAlign='left'},
 function(c,W,H,t){var p=W*.05,tk=H*.1;cover(c,0,0,W,H,t);grad(c,H*.4,W,H*.6,'#000000',0,.6);
  var f=fit(c,D.head,SA,700,W-2*p-W*.03,H*.3,W*.07,4),bh=f.L.length*f.lh+W*.06,by=H-tk-H*.03-bh;c.fillStyle=rgba(t.d,.86);c.fillRect(0,by,W,bh);c.fillStyle=t.a;c.fillRect(0,by,W*.02,bh);put(c,f,p+W*.015,by+W*.03,'#fff');
  chip(c,p,by-W*.06,D.tag,W*.034,t.a,t.o);c.fillStyle='#fff';c.beginPath();c.arc(p+W*.017,by-W*.03,W*.007,0,7);c.fill();
  c.fillStyle=t.a;c.fillRect(0,H-tk,W,tk);foot(c,W,p,H-tk,tk,t,t.o,rgba(t.o==='#fff'?'#ffffff':'#000000',.75),t.o)}];
-function rd(){D={head:$('head').value.trim(),tag:$('tag').value.trim(),brand:$('brand').value.trim(),date:$('date').value.trim(),src:$('src').value.trim()}}
+LN.push('নিউজপেপার','বৃত্ত','কোট','ডুয়াল','স্টিকার');
+LY.push(function(c,W,H,t){var p=W*.06,y0=H*.045;c.fillStyle='#f3eee2';c.fillRect(0,0,W,H);c.fillStyle='#16161a';c.fillRect(p,y0,W-2*p,5);c.fillRect(p,y0+10,W-2*p,2);c.textAlign='center';c.font='800 '+W*.06+'px '+SE;c.fillText(D.brand||'',W/2,y0+W*.085);c.font='400 '+W*.025+'px '+SA;c.fillStyle='#5b574d';c.fillText(meta(),W/2,y0+W*.125);c.textAlign='left';c.fillStyle='#16161a';c.fillRect(p,y0+W*.145,W-2*p,2);
+ var iy=H*.2,ih=H*.36;cover(c,p,iy,W-2*p,ih,t);c.strokeStyle='#16161a';c.lineWidth=3;c.strokeRect(p,iy,W-2*p,ih);chip(c,p,iy+ih,D.tag,W*.03,t.a,t.o);var ty=iy+ih+W*.075,f=fit(c,D.head,SE,800,W-2*p,H-ty-H*.06,W*.075,4);put(c,f,p,ty,'#16161a');c.fillStyle=t.a;c.fillRect(p,H-H*.04,W*.15,6)},
+function(c,W,H,t){var p=W*.06,r=Math.min(W*.27,H*.24),mx=W/2,cy=H*.33;c.fillStyle=t.d;c.fillRect(0,0,W,H);var g=c.createRadialGradient(mx,cy,0,mx,cy,W*.7);g.addColorStop(0,rgba(t.a,.35));g.addColorStop(1,rgba(t.a,0));c.fillStyle=g;c.fillRect(0,0,W,H);
+ c.save();c.beginPath();c.arc(mx,cy,r,0,7);c.clip();cover(c,mx-r,cy-r,2*r,2*r,t);c.restore();c.strokeStyle=t.a;c.lineWidth=W*.012;c.beginPath();c.arc(mx,cy,r+W*.012,0,7);c.stroke();
+ chip(c,mx,cy+r+W*.04,D.tag,W*.032,t.a,t.o,1);var ty=cy+r+W*.04+W*.075,f=fit(c,D.head,SE,800,W-2*p,H-ty-H*.12,W*.07,4);put(c,f,mx,ty,'#fff','center');
+ c.textAlign='center';c.font='700 '+W*.032+'px '+SA;c.fillStyle='#fff';c.fillText(D.brand||'',mx,H-H*.065);c.font='400 '+W*.026+'px '+SA;c.fillStyle='rgba(255,255,255,.65)';c.fillText(meta(),mx,H-H*.065+W*.04);c.textAlign='left'},
+function(c,W,H,t){var p=W*.09;cover(c,0,0,W,H,t);c.fillStyle=rgba(t.d,.84);c.fillRect(0,0,W,H);c.fillStyle=t.a;c.font='800 '+W*.3+'px '+SE;c.fillText('“',p-W*.02,H*.26);
+ var f=fit(c,D.head,SE,800,W-2*p,H*.5,W*.07,6),h=f.L.length*f.lh,top=Math.max(H*.28,(H-h)/2),y=top+h+H*.03;put(c,f,p,top,'#fff');c.fillStyle=t.a;c.fillRect(p,y,W*.12,6);
+ c.font='700 '+W*.034+'px '+SA;c.fillStyle='#fff';c.fillText(D.brand||'',p,y+W*.07);c.font='400 '+W*.026+'px '+SA;c.fillStyle='rgba(255,255,255,.65)';c.fillText([D.tag,meta()].filter(Boolean).join('  ·  '),p,y+W*.11)},
+function(c,W,H,t){var p=W*.05,pw=W*.52;c.fillStyle=t.d;c.fillRect(0,0,W,H);cover(c,0,0,W-pw,H,t);c.fillStyle=t.a;c.fillRect(W-pw,0,W*.012,H);
+ var x=W-pw+W*.045,mw=pw-W*.045-p;chip(c,x,H*.08,D.tag,W*.03,t.a,t.o);var f=fit(c,D.head,SE,800,mw,H*.6,W*.062,8);put(c,f,x,H*.08+W*.085,'#fff');
+ c.font='700 '+W*.03+'px '+SA;c.fillStyle=t.a;c.fillText(D.brand||'',x,H-H*.1);c.font='400 '+W*.024+'px '+SA;c.fillStyle='#aaa';c.fillText(meta(),x,H-H*.1+W*.04)},
+function(c,W,H,t){var p=W*.06;cover(c,0,0,W,H,t);grad(c,H*.5,W,H*.5,'#000000',0,.6);var f=fit(c,D.head,SA,700,W*.74,H*.34,W*.07,4),bh=f.L.length*f.lh+W*.06,by=H*.88-bh;
+ c.save();c.translate(p,by);c.rotate(-.035);c.fillStyle='#fff';c.shadowColor='rgba(0,0,0,.35)';c.shadowBlur=W*.02;c.fillRect(0,0,W*.82,bh);c.shadowBlur=0;c.fillStyle=t.a;c.fillRect(0,0,W*.018,bh);put(c,f,W*.045,W*.03,'#16161a');c.restore();
+ chip(c,p,by-W*.1,D.tag,W*.034,t.a,t.o);c.font='700 '+W*.032+'px '+SA;var bw=c.measureText(D.brand||'').width+W*.06,yy=H-H*.075;c.fillStyle=t.a;c.fillRect(p,yy-W*.035,bw,W*.07);c.fillStyle=t.o;c.fillText(D.brand||'',p+W*.03,yy+W*.01);
+ c.font='400 '+W*.026+'px '+SA;c.fillStyle='#fff';c.textAlign='right';c.fillText(meta(),W-p,yy+W*.01);c.textAlign='left'});
+function rd(){D={head:$('head').value.trim(),tag:$('tag').value.trim(),brand:$('brand').value.trim(),date:$('date').value.trim(),src:$('src').value.trim(),place:$('place').value.trim()}}
 function main(){rd();cx.imageSmoothingQuality='high';var L=LY.length,t=TH[Math.floor(cur/L)];paint(cx,cv.width,cv.height,t,cur%L);$('nm').textContent='টেমপ্লেট '+tb(cur+1)+' · '+LN[cur%L]+' · '+t.n}
-function paint(c,W,H,t,li){LY[li](c,W,H,t);if(!logo||LP==='no')return;var m=W*.04,h=Math.min(W,H)*.075*LS,w=h*logo.width/logo.height;if(w>W*.3){w=W*.3;h=w*logo.height/logo.width}var q=h*.16,bw=w+2*q,bh=h+2*q,r=bw>bh?bh*.22:bw*.22,x=LP==='tl'?m:LP==='tc'?(W-bw)/2:W-m-bw,y=m+(li===8?H*.085:0)+(li===7?W*.03:0);
+function paint(c,W,H,t,li){LY[li](c,W,H,t);if(!logo||LP==='no')return;var m=W*.04,h=Math.min(W,H)*.075*LS,w=h*logo.width/logo.height;if(w>W*.3){w=W*.3;h=w*logo.height/logo.width}var q=h*.16,bw=w+2*q,bh=h+2*q,r=bw>bh?bh*.22:bw*.22,x=LP==='tl'?m:LP==='tc'?(W-bw)/2:W-m-bw,y=m+(li===8?H*.085:0)+(li===10?H*.17:0)+(li===7?W*.03:0);
  c.save();c.fillStyle='rgba(255,255,255,.94)';c.shadowColor='rgba(0,0,0,.3)';c.shadowBlur=W*.015;c.beginPath();c.moveTo(x+r,y);c.arcTo(x+bw,y,x+bw,y+bh,r);c.arcTo(x+bw,y+bh,x,y+bh,r);c.arcTo(x,y+bh,x,y,r);c.arcTo(x,y,x+bw,y,r);c.closePath();c.fill();c.restore();c.drawImage(logo,x+q,y+q,w,h)}
 var tm=null,ths=[];
 function thumbs(){rd();ths.forEach(function(b,i){var c=b.firstChild.getContext('2d');c.clearRect(0,0,216,216);c.save();c.scale(.2,.2);paint(c,1080,1080,TH[Math.floor(i/LY.length)],i%LY.length);c.restore()})}
@@ -142,11 +164,11 @@ var gr=$('gr');function mk(i){(function(i){var b=document.createElement('button'
 for(var q=0;q<LY.length*TH.length;q++)mk(q);
 var ch=$('ch');['সব'].concat(TH.map(function(t){return t.n})).forEach(function(s,j){var b=document.createElement('button');b.textContent=s;if(!j)b.className='on';
  b.onclick=function(){flt=j-1;[].forEach.call(ch.children,function(x){x.classList.remove('on')});b.classList.add('on');ths.forEach(function(x,i){x.classList.toggle('h',flt>=0&&Math.floor(i/LY.length)!==flt)})};ch.appendChild(b)});
-['head','tag','brand','date','src'].forEach(function(i){$(i).addEventListener('input',all)});
+['head','tag','brand','date','src','place'].forEach(function(i){$(i).addEventListener('input',all)});
 $('file').onchange=function(e){var f=e.target.files[0];if(!f)return;var im=new Image();im.onload=function(){img=im;$('dz').textContent='✓ '+f.name;all()};im.src=URL.createObjectURL(f)};
 $('sz').onclick=function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(this.children,function(x){x.classList.remove('on')});b.classList.add('on');cv.width=+b.dataset.w;cv.height=+b.dataset.h;main()};
 $('dl').onclick=function(){main();cv.toBlob(function(bl){var a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='news-card-'+(cur+1)+'.png';document.body.appendChild(a);a.click();a.remove()})};
-var KW=[[/ব্রেকিং|জরুরি|এইমাত্র|আগুন|দুর্ঘটনা|নিহত|হামলা|ভূমিকম্প|বন্যা/,0,'ব্রেকিং নিউজ',9],[/ক্রিকেট|ফুটবল|খেলা|বিশ্বকাপ|ম্যাচ|টুর্নামেন্ট/,3,'খেলা',8],[/নির্বাচন|সরকার|মন্ত্রী|সংসদ|রাজনীতি|প্রধানমন্ত্রী/,1,'রাজনীতি',3],[/ডলার|টাকা|বাজার|দাম|ব্যাংক|অর্থনীতি|বাজেট|শেয়ার/,4,'অর্থনীতি',7],[/বিনোদন|সিনেমা|নাটক|গান|শিল্পী|অভিনেতা/,3,'বিনোদন',6],[/আবহাওয়া|বৃষ্টি|তাপমাত্রা|স্বাস্থ্য|ডেঙ্গু|হাসপাতাল/,2,'স্বাস্থ্য',2]];
+var KW=[[/বলেছেন|বললেন|মন্তব্য|বক্তব্য/,1,'বক্তব্য',12],[/সম্পাদকীয়|মতামত|বিশ্লেষণ|প্রতিবেদন/,4,'বিশ্লেষণ',10],[/ব্রেকিং|জরুরি|এইমাত্র|আগুন|দুর্ঘটনা|নিহত|হামলা|ভূমিকম্প|বন্যা/,0,'ব্রেকিং নিউজ',9],[/ক্রিকেট|ফুটবল|খেলা|বিশ্বকাপ|ম্যাচ|টুর্নামেন্ট/,3,'খেলা',8],[/নির্বাচন|সরকার|মন্ত্রী|সংসদ|রাজনীতি|প্রধানমন্ত্রী/,1,'রাজনীতি',3],[/ডলার|টাকা|বাজার|দাম|ব্যাংক|অর্থনীতি|বাজেট|শেয়ার/,4,'অর্থনীতি',7],[/বিনোদন|সিনেমা|নাটক|গান|শিল্পী|অভিনেতা/,3,'বিনোদন',6],[/আবহাওয়া|বৃষ্টি|তাপমাত্রা|স্বাস্থ্য|ডেঙ্গু|হাসপাতাল/,2,'স্বাস্থ্য',2]];
 function lum(){if(!img)return .4;var c=document.createElement('canvas');c.width=c.height=24;var g=c.getContext('2d');g.drawImage(img,0,0,24,24);var d=g.getImageData(0,0,24,24).data,s=0;for(var i=0;i<d.length;i+=4)s+=.2126*d[i]+.7152*d[i+1]+.0722*d[i+2];return s/(d.length/4)/255}
 function smart(){rd();var h=D.head,r={li:0,ti:0,tag:''};for(var k=0;k<KW.length;k++)if(KW[k][0].test(h)){r={ti:KW[k][1],tag:KW[k][2],li:KW[k][3]};break}
  if(h.length>85)r.li=1;else if(img&&lum()>.65)r.li=4;return r}
@@ -170,6 +192,38 @@ $('nt').onclick=async function(){var b=this,t0=b.textContent;rd();b.disabled=tru
  if(!t){var h=Math.floor(Math.random()*360);t={n:'নতুন '+tb(TH.length+1),a:hx(h,75,48),o:'#fff',d:hx(h,45,8)};why='নতুন রঙের থিম তৈরি হয়েছে (AI পাওয়া যায়নি, র‍্যান্ডম থিম)'}
  addTheme(t);$('am').textContent=why;b.disabled=false;b.textContent=t0};
 cnt();
+function exif(buf){var r={},v=new DataView(buf);try{if(v.getUint16(0)!==0xFFD8)return r;var o=2;while(o<v.byteLength-10){var m=v.getUint16(o);if(m===0xFFE1&&v.getUint32(o+4)===0x45786966){var t=o+10,le=v.getUint16(t)===0x4949,u=function(a){return v.getUint16(a,le)},w=function(a){return v.getUint32(a,le)};
+ var ifd=function(a){var h={},n=u(a);for(var i=0;i<n;i++){var e=a+2+i*12;h[u(e)]={t:u(e+2),c:w(e+4),p:e+8}}return h};
+ var val=function(e){var s=e.c*({1:1,2:1,3:2,4:4,5:8}[e.t]||1);return s>4?t+w(e.p):e.p};
+ var asc=function(e){var a=val(e),s='';for(var i=0;i<e.c-1;i++)s+=String.fromCharCode(v.getUint8(a+i));return s};
+ var dms=function(e){var a=val(e),x=[];for(var i=0;i<3;i++)x.push(w(a+i*8)/w(a+i*8+4));return x[0]+x[1]/60+x[2]/3600};
+ var i0=ifd(t+w(t+4));if(i0[0x8769]){var ex=ifd(t+w(i0[0x8769].p)),d=ex[0x9003]||ex[0x9004];if(d)r.date=asc(d)}
+ if(i0[0x8825]){var gp=ifd(t+w(i0[0x8825].p));if(gp[2]&&gp[4]){var la=dms(gp[2]),lo=dms(gp[4]);if(gp[1]&&asc(gp[1])==='S')la=-la;if(gp[3]&&asc(gp[3])==='W')lo=-lo;r.lat=la;r.lon=lo}}
+ if(!r.date&&i0[0x132])r.date=asc(i0[0x132]);return r}
+ o+=2+v.getUint16(o+2)}}catch(x){}return r}
+function pdate(s){var m=/(\d{4}):(\d\d):(\d\d)/.exec(s||'');return m&&+m[2]>0?tb(+m[3])+' '+mo[+m[2]-1]+' '+tb(m[1]):''}
+var EX={};
+function gotExif(r){EX=r;var h='',d=pdate(r.date);if(d)h+='<div>📅 ছবির তারিখ: <b>'+d+'</b> <button data-a="d">কার্ডে বসান</button></div>';
+ if(r.lat!=null)h+='<div>📍 GPS: <b>'+r.lat.toFixed(4)+', '+r.lon.toFixed(4)+'</b> <button data-a="p">স্থান খুঁজুন</button></div>';
+ $('ex').innerHTML=h||'এই ছবিতে তারিখ/GPS তথ্য নেই (ফেসবুক/হোয়াটসঅ্যাপের ছবি থেকে সাধারণত মুছে যায়)। নিচে হাতে লিখুন।';
+ if(d){$('date').value=d;all()}if(r.lat!=null)lookup()}
+async function lookup(){var r=EX;if(r.lat==null)return;var nm='';
+ try{var sm=window.claude&&claude.use?await claude.use('sample'):null;
+  if(sm){var j=await sm.json('GPS coordinates: '+r.lat.toFixed(5)+', '+r.lon.toFixed(5)+'. Name this place in Bengali, short (area, district), e.g. "শাহবাগ, ঢাকা". Reply JSON only: {"place":"..."}');nm=j.place}
+  else{var js=await (await fetch('https://nominatim.openstreetmap.org/reverse?format=json&accept-language=bn&zoom=14&lat='+r.lat+'&lon='+r.lon)).json(),a=js.address||{};nm=[a.suburb||a.neighbourhood||a.village||a.town,a.city||a.county||a.state_district].filter(Boolean).join(', ')||js.display_name}
+ }catch(e){}
+ if(!nm)nm=tb(r.lat.toFixed(3))+', '+tb(r.lon.toFixed(3));$('place').value=nm;all();toast('স্থান: '+nm)}
+$('ex').onclick=function(e){var b=e.target.closest('button');if(!b)return;if(b.dataset.a==='d'){$('date').value=pdate(EX.date);all()}else lookup()};
+var o1=$('file').onchange;$('file').onchange=function(e){o1(e);var f=e.target.files[0];if(f&&f.arrayBuffer)f.arrayBuffer().then(function(b){gotExif(exif(b))})};
+function opts(a,scene){var o=$('ho');o.innerHTML='';if(scene){var s=document.createElement('div');s.className='sc';s.textContent='AI যা দেখেছে: '+scene;o.appendChild(s)}a.forEach(function(h){var b=document.createElement('button');b.className='hb';b.textContent=h;b.onclick=function(){$('head').value=h;all()};o.appendChild(b)})}
+$('hl').onclick=async function(){var b=this,t0=b.textContent;if(!img){toast('আগে ছবি আপলোড করুন');return}rd();b.disabled=true;b.textContent='✨ ছবি দেখা হচ্ছে...';$('ho').innerHTML='';
+ try{var sm=window.claude&&claude.use?await claude.use('sample'):null,lim=sm?await sm.limits():null;if(!lim||!lim.images)throw 0;
+  var c=document.createElement('canvas');c.width=768;c.height=Math.round(768*img.height/img.width);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  var bl=await new Promise(function(r){c.toBlob(r,'image/jpeg',.75)});
+  var r=await sm.json('You are a Bengali news desk editor. Look at the attached photo and write 4 short Bengali news headlines (max 70 characters each, factual, neutral, no clickbait). Describe only what is visible. Do NOT identify anyone from their face and do NOT invent names, numbers or claims that are not visible or given below. Context - photo date: '+(pdate(EX.date)||'unknown')+'; place: '+(D.place||'unknown')+'; reporter note: '+($('note').value.trim()||'none')+'. Reply JSON only: {"headlines":["..."],"scene":"one short Bengali sentence on what is visible"}',{images:[bl],cache:false});
+  opts((r.headlines||[]).slice(0,4).map(String),r.scene)}
+ catch(e){var n=$('note').value.trim(),p=$('place').value.trim(),a=[];if(n)a.push((p?p+'-এ ':'')+n);if(n&&p)a.push(n+' ('+p+')');opts(a);$('ho').insertAdjacentHTML('afterbegin','<div class="sc">AI শিরোনাম শুধু Claude-এর লিঙ্কে চলে। নিজের হোস্টিংয়ে ব্যাকএন্ড লাগবে। উপরের নোট থেকে সহজ খসড়া দেওয়া হলো।</div>')}
+ b.disabled=false;b.textContent=t0};
 function toast(s){var t=$('ts');t.textContent=s;t.classList.add('on');setTimeout(function(){t.classList.remove('on')},1800)}
 function sl(i,fn){$(i).oninput=function(){fn(+this.value);all()}}
 sl('z',function(v){Z=v/100});sl('px',function(v){PX=v/100});sl('py',function(v){PY=v/100});sl('sc',function(v){SC=v/100});sl('ls',function(v){LS=v/100});$('lp').onclick=function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(this.children,function(x){x.classList.remove('on')});b.classList.add('on');LP=b.dataset.p;all()};
