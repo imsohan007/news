@@ -2,6 +2,7 @@
 <html lang="bn"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ফটোকার্ড স্টুডিও</title>
+<meta name="description" content="ছবি আর শিরোনাম দিয়ে মিনিটে নিউজ ফটোকার্ড বানান। ১৫০টি টেমপ্লেট ও AI সহায়ক।"><meta name="theme-color" content="#0e0f12"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E📰%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;700&family=Noto+Serif+Bengali:wght@800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#eceae6;--pn:#fff;--ink:#17181c;--mu:#6c6e76;--ln:#e0ddd7;--fd:#f6f5f2;--ac:#d62828;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -84,6 +85,8 @@ header{background:linear-gradient(120deg,#0e0f12,#2b0e11)}.logo{box-shadow:0 4px
 <section class="pn tp"><h2>টেমপ্লেট</h2><div class="chips" id="ch"></div><div class="grid" id="gr"></div></section>
 </main>
 <script>
+if(!window.claude){window.claude={use:async function(){return{limits:async function(){return{images:true}},json:async function(p,o){var im=[];if(o&&o.images)for(var i=0;i<o.images.length;i++)im.push(await new Promise(function(r){var f=new FileReader();f.onload=function(){r(String(f.result).split(',')[1])};f.readAsDataURL(o.images[i])}));
+var res=await fetch('/api/ai',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({prompt:p,images:im})});if(!res.ok)throw new Error('ai');var j=await res.json();return JSON.parse(String(j.text||'').replace(/```json|```/g,'').trim())}}}}}
 (function(){
 var $=function(i){return document.getElementById(i)},cv=$('cv'),cx=cv.getContext('2d');
 var SE='"Noto Serif Bengali"',SA='"Hind Siliguri"',img=null,D={},cur=0,flt=-1,Z=1,PX=0,PY=0,FF=null,SC=1,logo=null,LP='tr',LS=1;
@@ -222,7 +225,7 @@ $('hl').onclick=async function(){var b=this,t0=b.textContent;if(!img){toast('আ
   var bl=await new Promise(function(r){c.toBlob(r,'image/jpeg',.75)});
   var r=await sm.json('You are a Bengali news desk editor. Look at the attached photo and write 4 short Bengali news headlines (max 70 characters each, factual, neutral, no clickbait). Describe only what is visible. Do NOT identify anyone from their face and do NOT invent names, numbers or claims that are not visible or given below. Context - photo date: '+(pdate(EX.date)||'unknown')+'; place: '+(D.place||'unknown')+'; reporter note: '+($('note').value.trim()||'none')+'. Reply JSON only: {"headlines":["..."],"scene":"one short Bengali sentence on what is visible"}',{images:[bl],cache:false});
   opts((r.headlines||[]).slice(0,4).map(String),r.scene)}
- catch(e){var n=$('note').value.trim(),p=$('place').value.trim(),a=[];if(n)a.push((p?p+'-এ ':'')+n);if(n&&p)a.push(n+' ('+p+')');opts(a);$('ho').insertAdjacentHTML('afterbegin','<div class="sc">AI শিরোনাম শুধু Claude-এর লিঙ্কে চলে। নিজের হোস্টিংয়ে ব্যাকএন্ড লাগবে। উপরের নোট থেকে সহজ খসড়া দেওয়া হলো।</div>')}
+ catch(e){var n=$('note').value.trim(),p=$('place').value.trim(),a=[];if(n)a.push((p?p+'-এ ':'')+n);if(n&&p)a.push(n+' ('+p+')');opts(a);$('ho').insertAdjacentHTML('afterbegin','<div class="sc">AI এখন সংযুক্ত হয়নি (ইন্টারনেট বা সার্ভার সেটিং দেখুন)। উপরের নোট থেকে সহজ খসড়া দেওয়া হলো।</div>')}
  b.disabled=false;b.textContent=t0};
 function toast(s){var t=$('ts');t.textContent=s;t.classList.add('on');setTimeout(function(){t.classList.remove('on')},1800)}
 function sl(i,fn){$(i).oninput=function(){fn(+this.value);all()}}
@@ -234,6 +237,7 @@ var o0=$('file').onchange;$('file').onchange=function(e){o0(e);$('dz').classList
 $('dl').addEventListener('click',function(){toast('PNG ডাউনলোড শুরু হয়েছে')});
 $('jp').onclick=function(){main();cv.toBlob(function(bl){var a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='news-card-'+(cur+1)+'.jpg';document.body.appendChild(a);a.click();a.remove();toast('JPG ডাউনলোড শুরু হয়েছে')},'image/jpeg',.95)};
 $('cp').onclick=function(){main();cv.toBlob(function(bl){try{navigator.clipboard.write([new ClipboardItem({'image/png':bl})]).then(function(){toast('ছবি কপি হয়েছে')},function(){toast('কপি করা যায়নি, ডাউনলোড করুন')})}catch(x){toast('এই ব্রাউজারে কপি সাপোর্ট নেই')}})};
+try{['brand','tag','src'].forEach(function(k){var v=localStorage.getItem('pc_'+k);if(v!==null)$(k).value=v;$(k).addEventListener('input',function(){try{localStorage.setItem('pc_'+k,this.value)}catch(e){}})})}catch(e){}
 all();Promise.all([document.fonts.load('800 40px "Noto Serif Bengali"','আ'),document.fonts.load('700 30px "Hind Siliguri"','আ'),document.fonts.load('400 30px "Hind Siliguri"','আ')]).then(all).catch(function(){});
 })();
 </script></body></html>
