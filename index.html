@@ -47,13 +47,22 @@ input[type=range]{width:100%;accent-color:var(--ac)}
 .acts{display:flex;gap:8px}.acts button{font:inherit;font-size:13px;padding:7px 16px;border-radius:8px;border:1px solid var(--ln);background:var(--pn);color:var(--ink);cursor:pointer}.acts button:hover{border-color:var(--ac)}
 .ts{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:#101114;color:#fff;padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:9}.ts.on{opacity:1;transform:translate(-50%,0)}
 .t{transition:transform .15s}.t:hover{transform:translateY(-2px)}.drop.ok{border-style:solid;border-color:var(--ac);color:var(--ink)}
-.stage{background:var(--ln)}
+.stage{background:var(--ln);border-radius:18px}
+body{background:radial-gradient(1200px 500px at 50% -100px,rgba(214,40,40,.12),transparent),var(--bg)}
+header{background:linear-gradient(120deg,#0e0f12,#2b0e11)}.logo{box-shadow:0 4px 14px rgba(214,40,40,.5)}
+.pn{border-radius:16px}input[type=text],textarea{border-radius:10px}input[type=text]:focus,textarea:focus{border-color:var(--ac)}
+.btn{border-radius:99px;box-shadow:0 4px 14px rgba(214,40,40,.4)}.seg button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.drop::before{content:"＋";display:block;font-size:26px;line-height:1;color:var(--ac);margin-bottom:4px}.drop.ok::before{content:""}
+.t{border-radius:10px}.t canvas{border-radius:8px}
+.ai{width:100%;font:inherit;font-weight:700;padding:12px;border:0;border-radius:12px;color:#fff;background:linear-gradient(120deg,#d62828,#7c3aed);cursor:pointer;margin-bottom:8px;box-shadow:0 6px 18px rgba(124,58,237,.3)}.ai[disabled]{opacity:.6;cursor:wait}
+.aimsg{font-size:13px;color:var(--mu);margin-bottom:14px;padding:8px 10px;border-radius:8px;background:var(--fd)}.aimsg:empty{display:none}
+.ai2{width:100%;font:inherit;font-weight:500;padding:10px;border:1.5px dashed var(--ac);border-radius:12px;color:var(--ink);background:transparent;cursor:pointer;margin-bottom:8px}.ai2:hover{background:var(--fd)}.ai2[disabled]{opacity:.6;cursor:wait}
 @media(max-width:1100px){.pv{position:static}.stage{padding:12px}}
 @media(prefers-reduced-motion:reduce){.t,.ts{transition:none}.t:hover{transform:none}}
 </style></head><body>
 <header><div class="logo">ফ</div><h1>ফটোকার্ড স্টুডিও<small>৫০টি নিউজ টেমপ্লেট</small></h1><button class="btn" id="dl">ডাউনলোড PNG</button></header>
 <main>
-<section class="pn ct"><h2>কনটেন্ট</h2>
+<section class="pn ct"><button class="ai" id="ai">✨ AI অটো রেকমেন্ড</button><button class="ai2" id="nt">＋ AI দিয়ে নতুন টেমপ্লেট বানান</button><div class="aimsg" id="am" role="status"></div><h2>কনটেন্ট</h2>
 <label class="drop" for="file" id="dz">ছবি আপলোড করুন</label><input type="file" id="file" accept="image/*" hidden>
 <label for="head">শিরোনাম</label><textarea id="head">রাজধানীতে আজ থেকে নতুন যান চলাচল নিয়ম কার্যকর</textarea>
 <div class="r2"><div><label for="tag">ট্যাগ</label><input type="text" id="tag" value="ব্রেকিং নিউজ"></div><div><label for="brand">পেজের নাম</label><input type="text" id="brand" value="আপনার নিউজ"></div>
@@ -63,6 +72,8 @@ input[type=range]{width:100%;accent-color:var(--ac)}
 <label>শিরোনাম স্টাইল</label><div class="seg" id="ff"><button class="on">অটো</button><button data-f='"Noto Serif Bengali"'>সেরিফ</button><button data-f='"Hind Siliguri"'>সান্স</button></div>
 <div class="rg" style="margin-top:10px"><span>সাইজ</span><input type="range" id="sc" min="60" max="120" value="100"></div>
 <div style="margin-top:14px"><label class="drop" id="lz" for="logo">লোগো আপলোড (ঐচ্ছিক)</label><input type="file" id="logo" accept="image/*" hidden></div>
+<label>লোগো পজিশন ও সাইজ</label><div class="seg" id="lp"><button data-p="tl" title="বাম">↖</button><button data-p="tc" title="মাঝে">↑</button><button data-p="tr" class="on" title="ডান">↗</button><button data-p="no" title="নেই">✕</button></div>
+<div class="rg" style="margin-top:10px"><span>সাইজ</span><input type="range" id="ls" min="50" max="200" value="100"></div>
 </section>
 <section class="pv"><div class="stage"><canvas id="cv" width="1080" height="1080"></canvas></div><div class="nm" id="nm"></div><div class="acts"><button id="jp">JPG ডাউনলোড</button><button id="cp">ছবি কপি</button></div><div class="ts" id="ts" role="status"></div></section>
 <section class="pn tp"><h2>টেমপ্লেট</h2><div class="chips" id="ch"></div><div class="grid" id="gr"></div></section>
@@ -70,8 +81,8 @@ input[type=range]{width:100%;accent-color:var(--ac)}
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)},cv=$('cv'),cx=cv.getContext('2d');
-var SE='"Noto Serif Bengali"',SA='"Hind Siliguri"',img=null,D={},cur=0,flt=-1,Z=1,PX=0,PY=0,FF=null,SC=1,logo=null;
-var TH=[{n:'ক্রিমসন',a:'#d62828',o:'#fff',d:'#14090a'},{n:'ওশান',a:'#0b6bcb',o:'#fff',d:'#06182f'},{n:'এমারাল্ড',a:'#0a9a62',o:'#fff',d:'#05211a'},{n:'সানরাইজ',a:'#f29100',o:'#1a1000',d:'#241500'},{n:'গোল্ড',a:'#f2c230',o:'#111',d:'#0f0f12'}];
+var SE='"Noto Serif Bengali"',SA='"Hind Siliguri"',img=null,D={},cur=0,flt=-1,Z=1,PX=0,PY=0,FF=null,SC=1,logo=null,LP='tr',LS=1;
+var TH=[{n:'ক্রিমসন',a:'#d62828',o:'#fff',d:'#14090a'},{n:'ওশান',a:'#0b6bcb',o:'#fff',d:'#06182f'},{n:'এমারাল্ড',a:'#0a9a62',o:'#fff',d:'#05211a'},{n:'সানরাইজ',a:'#f29100',o:'#1a1000',d:'#241500'},{n:'গোল্ড',a:'#f2c230',o:'#111',d:'#0f0f12'},{n:'রয়্যাল',a:'#7c3aed',o:'#fff',d:'#150a2b'},{n:'রোজ',a:'#e11d74',o:'#fff',d:'#2a0716'},{n:'টিল',a:'#0891b2',o:'#fff',d:'#04202a'},{n:'গ্রাফাইট',a:'#e5e7eb',o:'#111',d:'#0b0b0d'},{n:'লাইম',a:'#84cc16',o:'#111',d:'#0c1405'}];
 var bn='০১২৩৪৫৬৭৮৯',mo=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
 function tb(s){return String(s).replace(/\d/g,function(d){return bn[d]})}
 var n=new Date();$('date').value=tb(n.getDate())+' '+mo[n.getMonth()]+' '+tb(n.getFullYear());
@@ -86,7 +97,7 @@ function grad(c,y,W,h,col,a0,a1){var g=c.createLinearGradient(0,y,0,y+h);g.addCo
 function chip(c,x,y,s,fs,bg,fg,ct){if(!s)return;c.font='700 '+fs+'px '+SA;var w=c.measureText(s).width+fs*1.3,h=fs*1.75;if(ct)x-=w/2;c.fillStyle=bg;c.fillRect(x,y,w,h);c.fillStyle=fg;c.textAlign='left';c.fillText(s,x+fs*.65,y+h*.7)}
 function meta(){return[D.src,D.date].filter(Boolean).join('  |  ')}
 function foot(c,W,p,y,h,t,fg,sub,dc){var fs=W*.034,by=y+h/2+fs*.35;c.font='700 '+fs+'px '+SA;
- var bx=p;if(logo){var lg=fs*1.7,lw=lg*logo.width/logo.height;c.drawImage(logo,p,by-fs*.3-lg/2,lw,lg);bx=p+lw+fs*.4}else if(D.brand){c.fillStyle=dc||t.a;c.beginPath();c.arc(p+fs*.4,by-fs*.3,fs*.28,0,7);c.fill();bx=p+fs*1.1}
+ var bx=p;if(D.brand){c.fillStyle=dc||t.a;c.beginPath();c.arc(p+fs*.4,by-fs*.3,fs*.28,0,7);c.fill();bx=p+fs*1.1}
  if(D.brand){c.font='700 '+fs+'px '+SA;c.fillStyle=fg;c.fillText(D.brand,bx,by)}
  c.font='400 '+W*.027+'px '+SA;c.fillStyle=sub;c.textAlign='right';c.fillText(meta(),W-p,by);c.textAlign='left'}
 var LN=['ক্লাসিক','স্প্লিট','সাইডবার','বক্স','সেন্টার','হোয়াইট প্যানেল','ডায়াগোনাল','ফ্রেম','টপ ব্যানার','লাইভ'];
@@ -120,21 +131,48 @@ function(c,W,H,t){var p=W*.05,tk=H*.1;cover(c,0,0,W,H,t);grad(c,H*.4,W,H*.6,'#00
  chip(c,p,by-W*.06,D.tag,W*.034,t.a,t.o);c.fillStyle='#fff';c.beginPath();c.arc(p+W*.017,by-W*.03,W*.007,0,7);c.fill();
  c.fillStyle=t.a;c.fillRect(0,H-tk,W,tk);foot(c,W,p,H-tk,tk,t,t.o,rgba(t.o==='#fff'?'#ffffff':'#000000',.75),t.o)}];
 function rd(){D={head:$('head').value.trim(),tag:$('tag').value.trim(),brand:$('brand').value.trim(),date:$('date').value.trim(),src:$('src').value.trim()}}
-function main(){rd();cx.imageSmoothingQuality='high';var t=TH[cur%5];LY[Math.floor(cur/5)](cx,cv.width,cv.height,t);$('nm').textContent='টেমপ্লেট '+tb(cur+1)+' · '+LN[Math.floor(cur/5)]+' · '+t.n}
+function main(){rd();cx.imageSmoothingQuality='high';var L=LY.length,t=TH[Math.floor(cur/L)];paint(cx,cv.width,cv.height,t,cur%L);$('nm').textContent='টেমপ্লেট '+tb(cur+1)+' · '+LN[cur%L]+' · '+t.n}
+function paint(c,W,H,t,li){LY[li](c,W,H,t);if(!logo||LP==='no')return;var m=W*.04,h=Math.min(W,H)*.075*LS,w=h*logo.width/logo.height;if(w>W*.3){w=W*.3;h=w*logo.height/logo.width}var q=h*.16,bw=w+2*q,bh=h+2*q,r=bw>bh?bh*.22:bw*.22,x=LP==='tl'?m:LP==='tc'?(W-bw)/2:W-m-bw,y=m+(li===8?H*.085:0)+(li===7?W*.03:0);
+ c.save();c.fillStyle='rgba(255,255,255,.94)';c.shadowColor='rgba(0,0,0,.3)';c.shadowBlur=W*.015;c.beginPath();c.moveTo(x+r,y);c.arcTo(x+bw,y,x+bw,y+bh,r);c.arcTo(x+bw,y+bh,x,y+bh,r);c.arcTo(x,y+bh,x,y,r);c.arcTo(x,y,x+bw,y,r);c.closePath();c.fill();c.restore();c.drawImage(logo,x+q,y+q,w,h)}
 var tm=null,ths=[];
-function thumbs(){rd();ths.forEach(function(b,i){var c=b.firstChild.getContext('2d');c.clearRect(0,0,216,216);c.save();c.scale(.2,.2);LY[Math.floor(i/5)](c,1080,1080,TH[i%5]);c.restore()})}
+function thumbs(){rd();ths.forEach(function(b,i){var c=b.firstChild.getContext('2d');c.clearRect(0,0,216,216);c.save();c.scale(.2,.2);paint(c,1080,1080,TH[Math.floor(i/LY.length)],i%LY.length);c.restore()})}
 function all(){main();clearTimeout(tm);tm=setTimeout(thumbs,250)}
-var gr=$('gr');for(var i=0;i<50;i++){(function(i){var b=document.createElement('button');b.className='t'+(i?'':' on');b.title=LN[Math.floor(i/5)]+' · '+TH[i%5].n;b.setAttribute('aria-label','টেমপ্লেট '+(i+1)+': '+b.title);var k=document.createElement('canvas');k.width=k.height=216;b.appendChild(k);
+var gr=$('gr');function mk(i){(function(i){var b=document.createElement('button');b.className='t'+(i?'':' on');b.title=LN[i%LY.length]+' · '+TH[Math.floor(i/LY.length)].n;b.setAttribute('aria-label','টেমপ্লেট '+(i+1)+': '+b.title);var k=document.createElement('canvas');k.width=k.height=216;b.appendChild(k);
  b.onclick=function(){cur=i;ths.forEach(function(x){x.classList.remove('on')});b.classList.add('on');main();if(innerWidth<=1100)$('cv').scrollIntoView({behavior:'smooth',block:'center'})};gr.appendChild(b);ths.push(b)})(i)}
+for(var q=0;q<LY.length*TH.length;q++)mk(q);
 var ch=$('ch');['সব'].concat(TH.map(function(t){return t.n})).forEach(function(s,j){var b=document.createElement('button');b.textContent=s;if(!j)b.className='on';
- b.onclick=function(){flt=j-1;[].forEach.call(ch.children,function(x){x.classList.remove('on')});b.classList.add('on');ths.forEach(function(x,i){x.classList.toggle('h',flt>=0&&i%5!==flt)})};ch.appendChild(b)});
+ b.onclick=function(){flt=j-1;[].forEach.call(ch.children,function(x){x.classList.remove('on')});b.classList.add('on');ths.forEach(function(x,i){x.classList.toggle('h',flt>=0&&Math.floor(i/LY.length)!==flt)})};ch.appendChild(b)});
 ['head','tag','brand','date','src'].forEach(function(i){$(i).addEventListener('input',all)});
 $('file').onchange=function(e){var f=e.target.files[0];if(!f)return;var im=new Image();im.onload=function(){img=im;$('dz').textContent='✓ '+f.name;all()};im.src=URL.createObjectURL(f)};
 $('sz').onclick=function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(this.children,function(x){x.classList.remove('on')});b.classList.add('on');cv.width=+b.dataset.w;cv.height=+b.dataset.h;main()};
 $('dl').onclick=function(){main();cv.toBlob(function(bl){var a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='news-card-'+(cur+1)+'.png';document.body.appendChild(a);a.click();a.remove()})};
+var KW=[[/ব্রেকিং|জরুরি|এইমাত্র|আগুন|দুর্ঘটনা|নিহত|হামলা|ভূমিকম্প|বন্যা/,0,'ব্রেকিং নিউজ',9],[/ক্রিকেট|ফুটবল|খেলা|বিশ্বকাপ|ম্যাচ|টুর্নামেন্ট/,3,'খেলা',8],[/নির্বাচন|সরকার|মন্ত্রী|সংসদ|রাজনীতি|প্রধানমন্ত্রী/,1,'রাজনীতি',3],[/ডলার|টাকা|বাজার|দাম|ব্যাংক|অর্থনীতি|বাজেট|শেয়ার/,4,'অর্থনীতি',7],[/বিনোদন|সিনেমা|নাটক|গান|শিল্পী|অভিনেতা/,3,'বিনোদন',6],[/আবহাওয়া|বৃষ্টি|তাপমাত্রা|স্বাস্থ্য|ডেঙ্গু|হাসপাতাল/,2,'স্বাস্থ্য',2]];
+function lum(){if(!img)return .4;var c=document.createElement('canvas');c.width=c.height=24;var g=c.getContext('2d');g.drawImage(img,0,0,24,24);var d=g.getImageData(0,0,24,24).data,s=0;for(var i=0;i<d.length;i+=4)s+=.2126*d[i]+.7152*d[i+1]+.0722*d[i+2];return s/(d.length/4)/255}
+function smart(){rd();var h=D.head,r={li:0,ti:0,tag:''};for(var k=0;k<KW.length;k++)if(KW[k][0].test(h)){r={ti:KW[k][1],tag:KW[k][2],li:KW[k][3]};break}
+ if(h.length>85)r.li=1;else if(img&&lum()>.65)r.li=4;return r}
+function apply(li,ti,tag,why){li=Math.max(0,Math.min(LY.length-1,li|0));ti=Math.max(0,Math.min(TH.length-1,ti|0));if(tag&&String(tag).length<=24)$('tag').value=tag;cur=ti*LY.length+li;ths.forEach(function(x,i){x.classList.toggle('on',i===cur)});all();$('am').textContent=why;if(innerWidth>1100)ths[cur].scrollIntoView({block:'nearest'})}
+$('ai').onclick=async function(){var b=this;rd();if(!D.head){toast('আগে শিরোনাম লিখুন');return}b.disabled=true;b.textContent='✨ বিশ্লেষণ চলছে...';
+ try{var sm=window.claude&&claude.use?await claude.use('sample'):null;
+  if(sm){var o={},ps='You pick the best news photo-card design. Layouts (index:name): '+LN.map(function(n,i){return i+':'+n}).join(', ')+'. Themes: '+TH.map(function(t,i){return i+':'+t.n}).join(', ')+'. Headline (Bengali): '+D.head+'. Reply JSON only: {"layout":0-'+(LY.length-1)+',"theme":0-'+(TH.length-1)+',"tag":"max 3 word Bengali category tag","reason":"one short Bengali sentence"}. Rules: headlines over 80 chars need layout 1 or 5; breaking news use theme 0 and layout 9 or 0; dark photos suit layouts 0,3,8; very bright photos suit 4 or 5; match mood (sports energetic, politics serious, economy calm).';
+   if(img)try{var lim=await sm.limits();if(lim&&lim.images){var c=document.createElement('canvas');c.width=512;c.height=Math.round(512*img.height/img.width);c.getContext('2d').drawImage(img,0,0,c.width,c.height);o.images=[await new Promise(function(r){c.toBlob(r,'image/jpeg',.7)})];ps+=' A photo is attached.'}}catch(x){}
+   var r=await sm.json(ps,o);apply(+r.layout,+r.theme,r.tag,'✨ AI: '+(r.reason||'সবচেয়ে ভালো টেমপ্লেট বাছা হয়েছে'))}
+  else{var s=smart();apply(s.li,s.ti,s.tag,'স্মার্ট রেকমেন্ড: শিরোনাম ও ছবি দেখে বাছা হয়েছে')}
+ }catch(e){var s2=smart();apply(s2.li,s2.ti,s2.tag,'স্মার্ট রেকমেন্ড (AI এখন পাওয়া যায়নি)')}
+ b.disabled=false;b.textContent='✨ AI অটো রেকমেন্ড'};
+function hx(h,s,l){s/=100;l/=100;var a=s*Math.min(l,1-l);function f(n){var k=(n+h/30)%12;return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1)))).toString(16).padStart(2,'0')}return'#'+f(0)+f(8)+f(4)}
+function cnt(){document.querySelector('header small').textContent=tb(LY.length*TH.length)+'টি টেমপ্লেট · AI দিয়ে আরও যোগ করুন'}
+function addTheme(t){TH.push(t);var L=LY.length;for(var i=(TH.length-1)*L;i<TH.length*L;i++)mk(i);var j=TH.length,b=document.createElement('button');b.textContent=t.n;b.onclick=function(){flt=j-1;[].forEach.call(ch.children,function(x){x.classList.remove('on')});b.classList.add('on');ths.forEach(function(x,i){x.classList.toggle('h',Math.floor(i/L)!==flt)})};ch.appendChild(b);cur=(TH.length-1)*L;ths.forEach(function(x,i){x.classList.toggle('on',i===cur)});cnt();all();if(innerWidth>1100)ths[cur].scrollIntoView({block:'nearest'})}
+$('nt').onclick=async function(){var b=this,t0=b.textContent;rd();b.disabled=true;b.textContent='✨ তৈরি হচ্ছে...';var t=null,why='';
+ try{var sm=window.claude&&claude.use?await claude.use('sample'):null;
+  if(sm){var r=await sm.json('Design ONE new bold color theme for a Bengali news photo card. Headline: '+(D.head||'news')+'. Reply JSON only: {"name":"2 word Bengali theme name","a":"#rrggbb vivid accent","d":"#rrggbb very dark tinted background","o":"#ffffff or #111111 readable text on the accent","why":"one short Bengali sentence"}',{cache:false});
+   if(/^#[0-9a-f]{6}$/i.test(r.a)&&/^#[0-9a-f]{6}$/i.test(r.d)){t={n:String(r.name||'এআই').slice(0,14),a:r.a,d:r.d,o:r.o==='#ffffff'?'#fff':'#111'};why='✨ AI: '+(r.why||'নতুন থিম তৈরি হয়েছে')}}
+ }catch(e){}
+ if(!t){var h=Math.floor(Math.random()*360);t={n:'নতুন '+tb(TH.length+1),a:hx(h,75,48),o:'#fff',d:hx(h,45,8)};why='নতুন রঙের থিম তৈরি হয়েছে (AI পাওয়া যায়নি, র‍্যান্ডম থিম)'}
+ addTheme(t);$('am').textContent=why;b.disabled=false;b.textContent=t0};
+cnt();
 function toast(s){var t=$('ts');t.textContent=s;t.classList.add('on');setTimeout(function(){t.classList.remove('on')},1800)}
 function sl(i,fn){$(i).oninput=function(){fn(+this.value);all()}}
-sl('z',function(v){Z=v/100});sl('px',function(v){PX=v/100});sl('py',function(v){PY=v/100});sl('sc',function(v){SC=v/100});
+sl('z',function(v){Z=v/100});sl('px',function(v){PX=v/100});sl('py',function(v){PY=v/100});sl('sc',function(v){SC=v/100});sl('ls',function(v){LS=v/100});$('lp').onclick=function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(this.children,function(x){x.classList.remove('on')});b.classList.add('on');LP=b.dataset.p;all()};
 $('ff').onclick=function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(this.children,function(x){x.classList.remove('on')});b.classList.add('on');FF=b.dataset.f||null;all()};
 $('logo').onchange=function(e){var f=e.target.files[0];if(!f)return;var im=new Image();im.onload=function(){logo=im;$('lz').textContent='✓ '+f.name;$('lz').classList.add('ok');all()};im.src=URL.createObjectURL(f)};
 var dz=$('dz');['dragover','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();if(ev==='drop'&&e.dataTransfer.files[0]){$('file').files=e.dataTransfer.files;$('file').onchange({target:$('file')})}})});
